@@ -2,7 +2,10 @@
  * HI-RSA
  * Highly Insecure RSA implementation
  * By Erik E
- * 
+ *
+ * For a quick summary of RSA, wikipedia has a good basic explanation
+ * https://en.wikipedia.org/wiki/RSA_%28algorithm%29
+ *  
  * See the README file for more details
  **/
 
@@ -225,22 +228,24 @@ void LargePrimes() {
 // Now create candidate primes P, Q
 // Get random candidate primes
 // Use /dev/urandom for a pseudorandom seed
+
   FILE * fp = fopen("/dev/urandom", "r");
   int seed;
-
   fread(&seed, sizeof(int), 1, fp);
   gmp_randseed_ui(rand, seed);
   mpz_urandomb(q, rand, qstrength);
-  gmp_printf("q ?= %Zd\n", q);
+  gmp_printf("Possible q value\n  %Zd\n", q);
 
   FILE * ft = fopen("/dev/urandom", "r"); // need to check whether this alters the seed compared to fp
   fread(&seed, sizeof(int), 1, ft);
   gmp_randseed_ui(rand, seed);
   mpz_urandomb(p, rand, pstrength);
-  gmp_printf("p ?= %Zd\n", p);
+  gmp_printf("Possible p value\n  %Zd\n", p);
+
   // Test if these candidate P, Q values are likely prime
   // Start by testing q
   // First check if q is even. If so, make q odd
+
   mpz_mod(candremainder, q, TWO);
   double rem = mpz_get_d(candremainder);
     if (rem == 0) {
@@ -249,9 +254,9 @@ void LargePrimes() {
 
   // Transform random p, q to prime p, q
   PrimeTest(q);
-  gmp_printf("q = %Zd\n", q);
+  gmp_printf("Post-prime test q\n  %Zd\n", q);
   PrimeTest(p);
-  gmp_printf("p = %Zd\n", p);
+  gmp_printf("Post-prime test p\n  %Zd\n", p);
 
  /** 
  *    Assume that we now know that p and q are large primes
